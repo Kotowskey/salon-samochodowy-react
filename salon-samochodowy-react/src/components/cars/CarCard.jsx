@@ -5,25 +5,54 @@ export const CarCard = ({ car, onRent }) => {
   const { user } = useAuth();
 
   return (
-    <div className="bg-white p-4 rounded shadow">
-      <h2 className="text-xl font-bold">{car.brand} {car.model}</h2>
-      <div className="mt-2 space-y-1">
-        <p>Year: {car.year}</p>
-        <p>Price: ${car.price}</p>
-        <p>Horse Power: {car.horsePower}</p>
-        <p>VIN: {car.vin}</p>
-        <p className={car.isAvailableForRent ? 'text-green-600' : 'text-red-600'}>
-          {car.isAvailableForRent ? 'Available' : 'Not Available'}
-        </p>
+    <div className="card h-100 shadow-lg">
+      {/* Nagłówek */}
+      <div className="card-header bg-primary text-white text-center">
+        <h5 className="card-title mb-0">
+          {car.brand} {car.model}
+        </h5>
       </div>
-      {user && car.isAvailableForRent && (
-        <button
-          onClick={() => onRent(car.id)}
-          className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full"
-        >
-          Rent Car
-        </button>
-      )}
+
+      {/* Treść karty */}
+      <div className="card-body">
+        <ul className="list-group list-group-flush">
+          <li className="list-group-item">
+            <strong>Year:</strong> {car.year}
+          </li>
+          <li className="list-group-item">
+            <strong>Price:</strong> ${car.price}
+          </li>
+          <li className="list-group-item">
+            <strong>Horse Power:</strong> {car.horsePower}
+          </li>
+          <li className="list-group-item">
+            <strong>VIN:</strong> {car.vin}
+          </li>
+          <li
+            className={`list-group-item fw-bold ${
+              car.isAvailableForRent ? 'text-success' : 'text-danger'
+            }`}
+          >
+            {car.isAvailableForRent ? 'Available' : 'Not Available'}
+          </li>
+        </ul>
+      </div>
+
+      {/* Przyciski */}
+      <div className="card-footer text-center">
+        {user && car.isAvailableForRent ? (
+          <button
+            onClick={() => onRent(car.id)}
+            className="btn btn-success w-100"
+          >
+            Rent Car
+          </button>
+        ) : (
+          <button className="btn btn-secondary w-100" disabled>
+            {car.isAvailableForRent ? 'Login to Rent' : 'Not Available'}
+          </button>
+        )}
+      </div>
     </div>
   );
 };
