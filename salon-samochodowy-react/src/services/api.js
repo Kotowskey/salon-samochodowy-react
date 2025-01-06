@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000';
+const API_URL = 'http://localhost:4200';
 
 export const fetchWithAuth = async (endpoint, options = {}) => {
  const defaultOptions = {

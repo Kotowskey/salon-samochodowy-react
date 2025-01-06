@@ -7,14 +7,14 @@ import { Op } from 'sequelize';
 import { body, param, validationResult } from 'express-validator'; // Import express-validator
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4200;
 
 // Middleware
 app.use(bodyParser.json());
 
 // Konfiguracja CORS
 app.use(cors({
-  origin: 'http://localhost:3001', 
+  origin: 'http://localhost:3000', 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true, 
 }));
