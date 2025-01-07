@@ -17,12 +17,12 @@ export const logout = async () => {
   });
 };
 
-export const register = async (userData) => {
+export const register = async (username, password,firstName,lastName) => {
   const response = await fetch(`${API_URL}/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
-    body: JSON.stringify(userData)
+    body: JSON.stringify({username, password,firstName,lastName})
   });
   return response.json();
 };

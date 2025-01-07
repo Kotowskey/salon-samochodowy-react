@@ -64,7 +64,7 @@ const RentalList = () => {
                   </div>
                 </div>
                 <button
-                  onClick={() => handleReturn(rental.id)}
+                  onClick={() => handleReturn(rental.carId)}
                   className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
                 >
                   Return Car

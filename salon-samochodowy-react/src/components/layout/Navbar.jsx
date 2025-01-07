@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import LoginForm from '../auth/LoginForm';
+import RegisterForm from '../auth/RegisterForm';
 
 const Navbar = () => {
   const { user, logoutUser } = useAuth();
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+
+  const openRegisterModal = () => setIsRegisterOpen(true);
+  const closeRegisterModal = () => setIsRegisterOpen(false);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-lg">
@@ -53,19 +58,46 @@ const Navbar = () => {
             {user ? (
               <>
                 <span className="text-white me-3">Welcome, {user.firstName}</span>
-                <button
-                  onClick={logoutUser}
-                  className="btn btn-outline-light"
-                >
+                <button onClick={logoutUser} className="btn btn-outline-light">
                   Logout
                 </button>
               </>
             ) : (
-              <LoginForm />
+              <>
+                <LoginForm />
+                <button
+                  onClick={openRegisterModal}
+                  className="btn btn-outline-light ms-2"
+                >
+                  Register
+                </button>
+              </>
             )}
           </div>
         </div>
       </div>
+
+      {/* Modal z formularzem rejestracji */}
+      {isRegisterOpen && (
+        <div className="modal fade show d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Register</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  aria-label="Close"
+                  onClick={closeRegisterModal}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <RegisterForm />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
