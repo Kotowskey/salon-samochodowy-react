@@ -1,76 +1,28 @@
-import { API_URL } from './config';
+const API_URL = 'http://localhost:4200';
 
 export const login = async (username, password) => {
-  try {
-    const response = await fetch(`${API_URL}/login`, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      credentials: 'include',
-      body: JSON.stringify({ username, password })
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Błąd logowania');
-    }
-
-    return response.json();
-  } catch (error) {
-    console.error('Login error:', error);
-    throw error;
-  }
+  const response = await fetch(`${API_URL}/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ username, password })
+  });
+  return response.json();
 };
 
 export const logout = async () => {
-  try {
-    const response = await fetch(`${API_URL}/logout`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Błąd wylogowania');
-    }
-
-    return response.json();
-  } catch (error) {
-    console.error('Logout error:', error);
-    throw error;
-  }
+  return fetch(`${API_URL}/logout`, {
+    method: 'POST',
+    credentials: 'include'
+  });
 };
 
-export const register = async (username, password, firstName, lastName) => {
-  try {
-    const response = await fetch(`${API_URL}/register`, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      credentials: 'include',
-      body: JSON.stringify({
-        username,
-        password,
-        firstName,
-        lastName
-      })
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Błąd rejestracji');
-    }
-
-    return response.json();
-  } catch (error) {
-    console.error('Register error:', error);
-    throw error;
-  }
+export const register = async (username, password,firstName,lastName) => {
+  const response = await fetch(`${API_URL}/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({username, password,firstName,lastName})
+  });
+  return response.json();
 };
