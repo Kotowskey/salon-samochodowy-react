@@ -1,3 +1,13 @@
+// 1. Struktura danych
+// Zawiera różne typy danych:
+
+// Stringi (brand, model, vin)
+// Numbers (price, horsePower)
+// Booleans (isAvailableForRent)
+// Daty (startDate, endDate)
+// Obiekty (car, user)
+// Tablice (cars, rentals)
+
 import { Sequelize } from 'sequelize';
 
 const sequelize = new Sequelize('salon_samochodowy', 'root', 'root', {

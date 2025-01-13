@@ -1,3 +1,9 @@
+// 9. Architektura Flux (2pkt) ✅
+// 
+// Zaimplementowana poprzez Context API (AuthContext.jsx)
+// Zarządzanie stanem aplikacji
+// Przepływ danych jednokierunkowy
+
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { login, logout, register } from '../services/authService';
 

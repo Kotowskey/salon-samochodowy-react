@@ -1,3 +1,8 @@
+// 8. Routing
+
+// Obecny w App.js i MainLayout.jsx
+// Zawiera parametry i ścieżki chronione
+
 import React from 'react';
 import { AuthProvider } from './context/AuthContext';
 import './App.css';

@@ -1,0 +1,116 @@
+Struktura danych (1pkt) ✅
+
+
+Widoczna w models.js - wielopoziomowa struktura z relacjami
+Zawiera różne typy danych:
+
+Stringi (brand, model, vin)
+Numbers (price, horsePower)
+Booleans (isAvailableForRent)
+Daty (startDate, endDate)
+Obiekty (car, user)
+Tablice (cars, rentals)
+
+
+
+
+Funkcjonalności (max 4pkt) ✅
+
+
+Dodawanie samochodów (CarManagement.jsx)
+Usuwanie samochodów (CarManagement.jsx)
+Filtrowanie samochodów (CarList.jsx)
+Wypożyczanie samochodów (RentalForm.jsx)
+Kupno samochodów (BuyCarForm.jsx)
+Leasing samochodów (LeasingForm.jsx)
+System logowania i rejestracji (LoginForm.jsx, RegisterForm.jsx)
+
+
+Elementy frameworka:
+1. Weryfikacja typów (1.5pkt) ❌
+
+
+Brak PropTypes lub TypeScript w projekcie
+Sugeruję dodanie PropTypes do komponentów
+
+2. Komponenty (4pkt) ✅
+
+Prezentacyjne:
+
+CarCard.jsx
+BuyCarForm.jsx
+LeasingForm.jsx
+RentalForm.jsx
+LoginForm.jsx
+RegisterForm.jsx
+MainLayout.jsx
+Navbar.jsx
+
+
+
+3. Dwukierunkowa komunikacja (1pkt) ✅
+
+Widoczna w komunikacji między:
+
+CarList i CarCard
+MainLayout i jego dziećmi
+Formularzami i ich rodzicami
+
+
+
+4. Komponenty reużywalne (2pkt) ✅
+
+CarCard.jsx używany w CarList.jsx
+Formularze (LoginForm, RegisterForm) używane w różnych miejscach
+
+
+5. Walidacja formularzy (1.5pkt) ✅
+
+
+Obecna w:
+
+LoginForm.jsx
+RegisterForm.jsx
+CarManagement.jsx
+RentalForm.jsx
+LeasingForm.jsx
+
+
+
+
+6. Operacje HTTP (2pkt) ✅
+
+
+GET (getAllCars, getCar)
+POST (createCar, createRental)
+PUT (updateCar)
+DELETE (deleteCar, deleteRental)
+Widoczne w api.js i serwisach
+
+
+7. Brak błędów w konsoli (0.5pkt) ✅ (aktualnie brak)
+
+
+
+
+8. Routing (1.5pkt) ✅
+
+
+Obecny w App.js i MainLayout.jsx
+Zawiera parametry i ścieżki chronione
+
+
+9. Architektura Flux (2pkt) ✅
+
+
+Zaimplementowana poprzez Context API (AuthContext.jsx)
+Zarządzanie stanem aplikacji
+Przepływ danych jednokierunkowy
+
+
+❌Brakujące elementy:❌
+
+PropTypes lub TypeScript do weryfikacji typów
+Testy jednostkowe (jest tylko podstawowy App.test.js)
+Obsługa błędów sieciowych mogłaby być bardziej rozbudowana
+Dokumentacja kodu
