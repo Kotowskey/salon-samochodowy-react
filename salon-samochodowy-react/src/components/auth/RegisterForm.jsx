@@ -38,47 +38,79 @@ const RegisterForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <input
-        type="text"
-        placeholder="Username"
-        value={credentials.username || ''}
-        onChange={(e) => setCredentials((prev) => ({ ...prev, username: e.target.value }))}
-        className="border p-2 rounded"
-        required
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={credentials.password || ''}
-        onChange={(e) => setCredentials((prev) => ({ ...prev, password: e.target.value }))}
-        className="border p-2 rounded"
-        required
-      />
-      <input
-        type="text"
-        placeholder="First Name"
-        value={credentials.firstName || ''}
-        onChange={(e) => setCredentials((prev) => ({ ...prev, firstName: e.target.value }))}
-        className="border p-2 rounded"
-        required
-      />
-      <input
-        type="text"
-        placeholder="Last Name"
-        value={credentials.lastName || ''}
-        onChange={(e) => setCredentials((prev) => ({ ...prev, lastName: e.target.value }))}
-        className="border p-2 rounded"
-        required
-      />
-      <button 
-        type="submit"
-        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-      >
-        Register
-      </button>
-      {error && <p className="text-red-500">{error}</p>}
-      {successMessage && <p className="text-green-500">{successMessage}</p>}
+    <form onSubmit={handleSubmit} className="needs-validation" noValidate>
+      <div className="mb-3">
+        <label htmlFor="username" className="form-label">Username</label>
+        <input
+          type="text"
+          id="username"
+          placeholder="Enter username"
+          value={credentials.username}
+          onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
+          className="form-control"
+          required
+        />
+      </div>
+
+      <div className="mb-3">
+        <label htmlFor="password" className="form-label">Password</label>
+        <input
+          type="password"
+          id="password"
+          placeholder="Enter password"
+          value={credentials.password}
+          onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
+          className="form-control"
+          required
+        />
+      </div>
+
+      <div className="mb-3">
+        <label htmlFor="firstName" className="form-label">First Name</label>
+        <input
+          type="text"
+          id="firstName"
+          placeholder="Enter first name"
+          value={credentials.firstName}
+          onChange={(e) => setCredentials(prev => ({ ...prev, firstName: e.target.value }))}
+          className="form-control"
+          required
+        />
+      </div>
+
+      <div className="mb-3">
+        <label htmlFor="lastName" className="form-label">Last Name</label>
+        <input
+          type="text"
+          id="lastName"
+          placeholder="Enter last name"
+          value={credentials.lastName}
+          onChange={(e) => setCredentials(prev => ({ ...prev, lastName: e.target.value }))}
+          className="form-control"
+          required
+        />
+      </div>
+
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
+      
+      {successMessage && (
+        <div className="alert alert-success" role="alert">
+          {successMessage}
+        </div>
+      )}
+
+      <div className="d-grid gap-2">
+        <button 
+          type="submit"
+          className="btn btn-primary"
+        >
+          Register
+        </button>
+      </div>
     </form>
   );
 };

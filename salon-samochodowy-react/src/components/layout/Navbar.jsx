@@ -12,83 +12,99 @@ const Navbar = () => {
   const closeRegisterModal = () => setIsRegisterOpen(false);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-lg">
-      <div className="container">
-        {/* Logo lub tytuł */}
-        <Link to="/" className="navbar-brand fw-bold">
-          Car Rental
-        </Link>
+    <>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-lg">
+        <div className="container">
+          <Link to="/" className="navbar-brand d-flex align-items-center">
+            <i className="bi bi-car-front me-2"></i>
+            <span className="fw-bold">Car Rental</span>
+          </Link>
 
-        {/* Przycisk do rozwijania nawigacji w widoku mobilnym */}
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
 
-        {/* Linki nawigacyjne */}
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            {user && (
-              <>
-                <li className="nav-item">
-                  <Link to="/rentals" className="nav-link">
-                    My Rentals
-                  </Link>
-                </li>
-                {user.isDealer && (
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+              {user && (
+                <>
                   <li className="nav-item">
-                    <Link to="/manage-cars" className="nav-link">
-                      Manage Cars
+                    <Link to="/rentals" className="nav-link">
+                      <i className="bi bi-clipboard-check me-1"></i>
+                      My Rentals
                     </Link>
                   </li>
-                )}
-              </>
-            )}
-          </ul>
+                  {user.isDealer && (
+                    <li className="nav-item">
+                      <Link to="/manage-cars" className="nav-link">
+                        <i className="bi bi-gear me-1"></i>
+                        Manage Cars
+                      </Link>
+                    </li>
+                  )}
+                </>
+              )}
+            </ul>
 
-          {/* Prawa strona nawigacji: logowanie / wylogowanie */}
-          <div className="d-flex align-items-center">
-            {user ? (
-              <>
-                <span className="text-white me-3">Welcome, {user.firstName}</span>
-                <button onClick={logoutUser} className="btn btn-outline-light">
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <LoginForm />
-                <button
-                  onClick={openRegisterModal}
-                  className="btn btn-outline-light ms-2"
-                >
-                  Register
-                </button>
-              </>
-            )}
+            <div className="d-flex align-items-center">
+              {user ? (
+                <div className="d-flex align-items-center gap-3">
+                  <span className="text-white">
+                    <i className="bi bi-person-circle me-2"></i>
+                    Welcome, {user.firstName}
+                  </span>
+                  <button 
+                    onClick={logoutUser} 
+                    className="btn btn-outline-light btn-sm"
+                  >
+                    <i className="bi bi-box-arrow-right me-1"></i>
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <div className="d-flex align-items-center gap-2">
+                  <LoginForm />
+                  <button
+                    onClick={openRegisterModal}
+                    className="btn btn-outline-light btn-sm"
+                  >
+                    <i className="bi bi-person-plus me-1"></i>
+                    Register
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </nav>
 
-      {/* Modal z formularzem rejestracji */}
+      {/* Modal rejestracji */}
       {isRegisterOpen && (
-        <div className="modal fade show d-block" tabIndex="-1" role="dialog" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-          <div className="modal-dialog" role="document">
+        <div 
+          className="modal fade show" 
+          style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}
+          tabIndex="-1"
+        >
+          <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Register</h5>
+                <h5 className="modal-title">
+                  <i className="bi bi-person-plus me-2"></i>
+                  Create Account
+                </h5>
                 <button
                   type="button"
                   className="btn-close"
-                  aria-label="Close"
                   onClick={closeRegisterModal}
+                  aria-label="Close"
                 ></button>
               </div>
               <div className="modal-body">
@@ -98,7 +114,7 @@ const Navbar = () => {
           </div>
         </div>
       )}
-    </nav>
+    </>
   );
 };
 

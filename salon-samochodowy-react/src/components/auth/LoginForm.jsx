@@ -20,30 +20,32 @@ const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
-      <input
-        type="text"
-        placeholder="Username"
-        value={credentials.username}
-        onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
-        className="border p-2 rounded"
-        required
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={credentials.password}
-        onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
-        className="border p-2 rounded"
-        required
-      />
-      <button 
-        type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-      >
-        Login
-      </button>
-      {error && <p className="text-red-500">{error}</p>}
+    <form onSubmit={handleSubmit} className="d-flex align-items-center gap-2">
+      <div className="input-group">
+        <input
+          type="text"
+          placeholder="Username"
+          value={credentials.username}
+          onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
+          className="form-control form-control-sm"
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={credentials.password}
+          onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
+          className="form-control form-control-sm"
+          required
+        />
+        <button 
+          type="submit"
+          className="btn btn-outline-light btn-sm"
+        >
+          Login
+        </button>
+      </div>
+      {error && <div className="invalid-feedback d-block">{error}</div>}
     </form>
   );
 };
