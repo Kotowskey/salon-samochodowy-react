@@ -617,7 +617,6 @@ app.post('/admin/create-customer', authenticateSession, [
 });
 
 
-//RENTALS
 app.post('/rentals', authenticateSession, async (req, res) => {
     console.log('Żądanie do zapisania wynajmu:', req.body, 'Użytkownik:', req.session.userId);
 
@@ -629,55 +628,95 @@ app.post('/rentals', authenticateSession, async (req, res) => {
             return res.status(400).json({ error: 'Nieprawidłowe daty wynajmu' });
         }
 
-        // Dodanie wynajmu do bazy danych
-        const rental = await Rental.create({
-            carId,
-            userId: req.session.userId,
-            startDate: new Date(startDate),
-            endDate: new Date(endDate),
-        });
-
-        console.log('Wynajem zapisany:', rental);
-
-        // Aktualizacja statusu samochodu
+        // Sprawdź, czy samochód istnieje i jest dostępny
         const car = await Car.findByPk(carId);
-        if (car) {
-            car.isAvailableForRent = false;
-            await car.save();
+        if (!car) {
+            return res.status(404).json({ error: 'Samochód nie znaleziony' });
+        }
+        if (!car.isAvailableForRent) {
+            return res.status(400).json({ error: 'Samochód nie jest dostępny do wynajmu' });
         }
 
-        res.status(201).json({ message: 'Wynajem zapisany', rental });
+        // Rozpocznij transakcję
+        const t = await sequelize.transaction();
+
+        try {
+            // Utwórz wynajem
+            const rental = await Rental.create({
+                carId,
+                userId: req.session.userId,
+                startDate: new Date(startDate),
+                endDate: new Date(endDate),
+            }, { transaction: t });
+
+            // Aktualizuj status samochodu i renterId
+            await car.update({
+                isAvailableForRent: false,
+                renterId: req.session.userId
+            }, { transaction: t });
+
+            // Zatwierdź transakcję
+            await t.commit();
+
+            console.log('Wynajem zapisany:', rental);
+            res.status(201).json({ message: 'Wynajem zapisany', rental });
+        } catch (error) {
+            // Wycofaj transakcję w przypadku błędu
+            await t.rollback();
+            throw error;
+        }
     } catch (error) {
         console.error('Błąd przy zapisie wynajmu:', error);
         res.status(500).json({ error: error.message });
     }
 });
 
+// Endpoint do usuwania wynajmu (zwrot samochodu)
 app.delete('/rentals/:id', authenticateSession, async (req, res) => {
     try {
         const rentalId = req.params.id;
 
-        // Znajdź wynajem
-        const rental = await Rental.findOne({ where: { carId: rentalId } });
-        if (!rental) {
-            return res.status(404).json({ error: 'Wynajem nie znaleziony' });
+        // Rozpocznij transakcję
+        const t = await sequelize.transaction();
+
+        try {
+            // Znajdź wynajem
+            const rental = await Rental.findOne({ 
+                where: { carId: rentalId },
+                transaction: t
+            });
+
+            if (!rental) {
+                await t.rollback();
+                return res.status(404).json({ error: 'Wynajem nie znaleziony' });
+            }
+
+            // Sprawdź, czy użytkownik jest właścicielem wynajmu
+            if (rental.userId !== req.session.userId) {
+                await t.rollback();
+                return res.status(403).json({ error: 'Nie masz uprawnień do usunięcia tego wynajmu' });
+            }
+
+            // Znajdź i zaktualizuj samochód
+            const car = await Car.findByPk(rental.carId, { transaction: t });
+            if (car) {
+                await car.update({
+                    isAvailableForRent: true,
+                    renterId: null
+                }, { transaction: t });
+            }
+
+            // Usuń wynajem
+            await rental.destroy({ transaction: t });
+
+            // Zatwierdź transakcję
+            await t.commit();
+
+            res.status(200).json({ message: 'Wynajem usunięty' });
+        } catch (error) {
+            await t.rollback();
+            throw error;
         }
-
-        // Sprawdź, czy użytkownik jest właścicielem wynajmu
-        if (rental.userId !== req.session.userId) {
-            return res.status(403).json({ error: 'Nie masz uprawnień do usunięcia tego wynajmu' });
-        }
-
-        // Usunięcie wynajmu i aktualizacja statusu samochodu
-        await rental.destroy();
-
-        const car = await Car.findByPk(rental.carId);
-        if (car) {
-            car.isAvailableForRent = true;
-            await car.save();
-        }
-
-        res.status(200).json({ message: 'Wynajem usunięty' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
