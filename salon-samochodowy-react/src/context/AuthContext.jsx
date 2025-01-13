@@ -1,21 +1,44 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import { login, logout, register } from '../services/authService';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Sprawdź sesję przy starcie aplikacji
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  const checkSession = async () => {
+    try {
+      const response = await fetch('http://localhost:4200/current-user', {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+      }
+    } catch (error) {
+      console.error('Session check failed:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const loginUser = async (username, password) => {
     try {
-      const data = await login(username, password);
-      if (data.user) {
-        setUser(data.user);
+      const response = await login(username, password);
+      if (response.user) {
+        setUser(response.user);
         return true;
       }
       return false;
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Login failed:', error);
       return false;
     }
   };
@@ -25,48 +48,39 @@ export const AuthProvider = ({ children }) => {
       await logout();
       setUser(null);
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('Logout failed:', error);
     }
   };
 
   const registerUser = async (username, password, firstName, lastName) => {
     try {
-      console.log('Registering user:', { username, password, firstName, lastName });
-  
-      // Wywołanie funkcji register z authService
-      const data = await register(username, password, firstName, lastName);
-  
-      console.log('API response:', data);
-  
-      // Sprawdzenie, czy odpowiedź zawiera dane użytkownika
-      if (data && data.user) {
-        setUser(data.user); // Zapisanie użytkownika w stanie (jeśli wymagane)
-        console.log('User registered successfully:', data.user);
+      const response = await register(username, password, firstName, lastName);
+      if (response.user) {
+        setUser(response.user);
         return true;
       }
-  
-      // Obsługa sytuacji, gdy API zwraca odpowiedź, ale brak danych użytkownika
-      console.error('Registration failed: Missing user in response');
       return false;
     } catch (error) {
-      // Obsługa błędów i logowanie szczegółów
-      console.error('Register error:', error.message || error);
-  
-      // Możesz dodać więcej szczegółów na podstawie struktury błędów zwracanych przez API
-      if (error.response && error.response.data) {
-        console.error('API Error details:', error.response.data);
-      }
-  
+      console.error('Registration failed:', error);
       return false;
     }
   };
-  
-  
+
+  if (loading) {
+    return <div className="text-center p-4">Loading...</div>;
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loginUser, logoutUser,registerUser }}>
+    <AuthContext.Provider value={{ user, loginUser, logoutUser, registerUser }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
