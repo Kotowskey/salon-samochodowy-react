@@ -58,27 +58,10 @@ sequelize.authenticate()
         console.error('Nie udało się połączyć z bazą danych:', err);
     });
 
-/**
- * @api {get} / Strona główna API
- * @apiName GetHome
- * @apiGroup General
- *
- */
 app.get('/', (req, res) => {
     res.send('Witamy w API Zarządzanie Samochodami!');
 });
 
-/**
- * @api {post} /register Rejestracja nowego użytkownika
- * @apiName RegisterUser
- * @apiGroup Authentication
- *
- * @apiParam {String{3..}} username Nazwa użytkownika (min 3 znaki)
- * @apiParam {String{6..}} password Hasło użytkownika (min 6 znaków)
- * @apiParam {String} firstName Imię użytkownika (wymagane)
- * @apiParam {String} lastName Nazwisko użytkownika (wymagane)
- *
- */
 app.post('/register', [
     body('username')
         .isString().withMessage('Nazwa użytkownika musi być tekstem')
@@ -128,15 +111,6 @@ app.post('/register', [
     }
 });
 
-/**
- * @api {post} /login Logowanie użytkownika
- * @apiName LoginUser
- * @apiGroup Authentication
- *
- * @apiParam {String{3..}} username Nazwa użytkownika (min 3 znaki)
- * @apiParam {String{6..}} password Hasło użytkownika (min 6 znaków)
- *
- */
 app.post('/login', [
     body('username')
         .isString().withMessage('Nazwa użytkownika musi być tekstem')
@@ -180,12 +154,6 @@ app.post('/login', [
     }
 });
 
-/**
- * @api {post} /logout Wylogowanie użytkownika
- * @apiName LogoutUser
- * @apiGroup Authentication
- *
- */
 app.post('/logout', (req, res) => {
     if (req.session) {
         req.session.destroy(err => {
@@ -200,15 +168,6 @@ app.post('/logout', (req, res) => {
     }
 });
 
-/**
- * @api {get} /cars Pobierz wszystkie samochody
- * @apiName GetAllCars
- * @apiGroup Cars
- *
- * @apiParam {Number{1..}} [page=1] Numer strony
- * @apiParam {Number{1..}} [limit=10] Liczba rekordów na stronę
- *
- */
 app.get('/cars', async (req, res) => {
     try {
         const cars = await Car.findAll();
@@ -218,14 +177,6 @@ app.get('/cars', async (req, res) => {
     }
 });
 
-/**
- * @api {get} /cars/:id Pobierz samochód po ID
- * @apiName GetCarById
- * @apiGroup Cars
- *
- * @apiParam {Number{1..}} id ID samochodu
- *
- */
 app.get('/cars/:id', [
     param('id')
         .isInt({ min: 1 }).withMessage('ID samochodu musi być liczbą całkowitą większą lub równą 1'),
@@ -243,23 +194,6 @@ app.get('/cars/:id', [
     }
 });
 
-/**
- * @api {post} /cars Dodaj nowy samochód
- * @apiName CreateCar
- * @apiGroup Cars
- * @apiPermission authenticated
- *
- * @apiHeader {String} Cookie Sesja użytkownika
- *
- * @apiParam {String} brand Marka samochodu (wymagane)
- * @apiParam {String} model Model samochodu (wymagane)
- * @apiParam {Number{1886..}} year Rok produkcji (min 1886)
- * @apiParam {String{17}} vin Numer VIN (dokładnie 17 znaków)
- * @apiParam {Number{0..}} price Cena samochodu (liczba dodatnia)
- * @apiParam {Number{1..}} horsePower Moc silnika (liczba całkowita >= 1)
- * @apiParam {Boolean} isAvailableForRent Status dostępności do wynajmu (wymagane)
- *
- */
 app.post('/cars', authenticateSession, [
     body('brand')
         .isString().withMessage('Marka musi być tekstem')
@@ -297,24 +231,6 @@ app.post('/cars', authenticateSession, [
     }
 });
 
-/**
- * @api {put} /cars/:id Aktualizuj informacje o samochodzie
- * @apiName UpdateCar
- * @apiGroup Cars
- * @apiPermission authenticated
- *
- * @apiHeader {String} Cookie Sesja użytkownika
- *
- * @apiParam {Number{1..}} id ID samochodu
- * @apiParam {String} [brand] Marka samochodu (nie może być pusta)
- * @apiParam {String} [model] Model samochodu (nie może być pusty)
- * @apiParam {Number{1886..}} [year] Rok produkcji (min 1886)
- * @apiParam {String{17}} [vin] Numer VIN (dokładnie 17 znaków)
- * @apiParam {Number{0..}} [price] Cena samochodu (liczba dodatnia)
- * @apiParam {Number{1..}} [horsePower] Moc silnika (liczba całkowita >= 1)
- * @apiParam {Boolean} [isAvailableForRent] Status dostępności do wynajmu
- *
- */
 app.put('/cars/:id', authenticateSession, [
     param('id')
         .isInt({ min: 1 }).withMessage('ID samochodu musi być liczbą całkowitą większą lub równą 1'),
@@ -358,17 +274,6 @@ app.put('/cars/:id', authenticateSession, [
     }
 });
 
-/**
- * @api {delete} /cars/:id Usuń samochód
- * @apiName DeleteCar
- * @apiGroup Cars
- * @apiPermission authenticated, dealer
- *
- * @apiHeader {String} Cookie Sesja użytkownika
- *
- * @apiParam {Number{1..}} id ID samochodu
- *
- */
 app.delete('/cars/:id', authenticateSession, [
     param('id')
         .isInt({ min: 1 }).withMessage('ID samochodu musi być liczbą całkowitą większą lub równą 1'),
@@ -396,18 +301,6 @@ app.delete('/cars/:id', authenticateSession, [
     }
 });
 
-/**
- * @api {get} /users Pobierz wszystkich klientów
- * @apiName GetAllUsers
- * @apiGroup Users
- * @apiPermission authenticated
- *
- * @apiHeader {String} Cookie Sesja użytkownika
- *
- * @apiParam {Number{1..}} [page=1] Numer strony
- * @apiParam {Number{1..}} [limit=10] Liczba rekordów na stronę
- *
- */
 app.get('/users', authenticateSession, async (req, res) => {
     try {
         const users = await User.findAll({
@@ -419,17 +312,6 @@ app.get('/users', authenticateSession, async (req, res) => {
     }
 });
 
-/**
- * @api {get} /users/:id Pobierz klienta po ID
- * @apiName GetUserById
- * @apiGroup Users
- * @apiPermission authenticated
- *
- * @apiHeader {String} Cookie Sesja użytkownika
- *
- * @apiParam {Number{1..}} id ID użytkownika
- *
- */
 app.get('/users/:id', authenticateSession, [
     param('id')
         .isInt({ min: 1 }).withMessage('ID użytkownika musi być liczbą całkowitą większą lub równą 1'),
@@ -447,21 +329,6 @@ app.get('/users/:id', authenticateSession, [
     }
 });
 
-/**
- * @api {put} /users/:id Aktualizuj informacje o kliencie
- * @apiName UpdateUser
- * @apiGroup Users
- * @apiPermission authenticated, self
- *
- * @apiHeader {String} Cookie Sesja użytkownika
- *
- * @apiParam {Number{1..}} id ID użytkownika
- * @apiParam {String{3..}} [username] Nazwa użytkownika (min 3 znaki)
- * @apiParam {String{6..}} [password] Hasło użytkownika (min 6 znaków)
- * @apiParam {String} [firstName] Imię użytkownika (nie może być puste)
- * @apiParam {String} [lastName] Nazwisko użytkownika (nie może być puste)
- *
- */
 app.put('/users/:id', authenticateSession, [
     param('id')
         .isInt({ min: 1 }).withMessage('ID użytkownika musi być liczbą całkowitą większą lub równą 1'),
@@ -500,17 +367,6 @@ app.put('/users/:id', authenticateSession, [
     }
 });
 
-/**
- * @api {delete} /users/:id Usuń klienta
- * @apiName DeleteUser
- * @apiGroup Users
- * @apiPermission authenticated, self
- *
- * @apiHeader {String} Cookie Sesja użytkownika
- *
- * @apiParam {Number{1..}} id ID użytkownika
- *
- */
 app.delete('/users/:id', authenticateSession, [
     param('id')
         .isInt({ min: 1 }).withMessage('ID użytkownika musi być liczbą całkowitą większą lub równą 1'),
@@ -534,17 +390,6 @@ app.delete('/users/:id', authenticateSession, [
     }
 });
 
-/**
- * @api {post} /cars/:id/rent Wypożycz samochód
- * @apiName RentCar
- * @apiGroup Cars
- * @apiPermission authenticated
- *
- * @apiHeader {String} Cookie Sesja użytkownika
- *
- * @apiParam {Number{1..}} id ID samochodu
- *
- */
 app.post('/cars/:id/rent', authenticateSession, [
     param('id')
         .isInt({ min: 1 }).withMessage('ID samochodu musi być liczbą całkowitą większą lub równą 1'),
@@ -576,17 +421,6 @@ app.post('/cars/:id/rent', authenticateSession, [
     }
 });
 
-/**
- * @api {post} /cars/:id/return Zwrot samochodu
- * @apiName ReturnCar
- * @apiGroup Cars
- * @apiPermission authenticated, renter
- *
- * @apiHeader {String} Cookie Sesja użytkownika
- *
- * @apiParam {Number{1..}} id ID samochodu
- *
- */
 app.post('/cars/:id/return', authenticateSession, [
     param('id')
         .isInt({ min: 1 }).withMessage('ID samochodu musi być liczbą całkowitą większą lub równą 1'),
@@ -622,14 +456,6 @@ app.post('/cars/:id/return', authenticateSession, [
     }
 });
 
-/**
- * @api {get} /cars/:id/renter Pobierz wynajmującego samochód
- * @apiName GetCarRenter
- * @apiGroup Cars
- *
- * @apiParam {Number{1..}} id ID samochodu
- *
- */
 app.get('/cars/:id/renter', [
     param('id')
         .isInt({ min: 1 }).withMessage('ID samochodu musi być liczbą całkowitą większą lub równą 1'),
@@ -650,17 +476,6 @@ app.get('/cars/:id/renter', [
     }
 });
 
-/**
- * @api {post} /cars/:id/buy Kupno samochodu
- * @apiName BuyCar
- * @apiGroup Cars
- * @apiPermission authenticated
- *
- * @apiHeader {String} Cookie Sesja użytkownika
- *
- * @apiParam {Number{1..}} id ID samochodu
- *
- */
 app.post('/cars/:id/buy', authenticateSession, [
     param('id')
         .isInt({ min: 1 }).withMessage('ID samochodu musi być liczbą całkowitą większą lub równą 1'),
@@ -692,15 +507,6 @@ app.post('/cars/:id/buy', authenticateSession, [
     }
 });
 
-/**
- * @api {get} /current-user Pobierz aktualnie zalogowanego użytkownika
- * @apiName GetCurrentUser
- * @apiGroup Users
- * @apiPermission authenticated
- *
- * @apiHeader {String} Cookie Sesja użytkownika
- *
- */
 app.get('/current-user', authenticateSession, async (req, res) => {
     try {
         const user = await User.findByPk(req.session.userId, {
@@ -716,16 +522,6 @@ app.get('/current-user', authenticateSession, async (req, res) => {
     }
 });
 
-/**
- * @api {post} /cars/:id/leasing Leasing samochodu
- * @apiName LeaseCar
- * @apiGroup Cars
- *
- * @apiParam {Number{1..}} id ID samochodu
- * @apiParam {Number{0..}} downPayment Wpłata wstępna (liczba dodatnia)
- * @apiParam {Number{1..}} months Liczba miesięcy (liczba całkowita >= 1)
- *
- */
 app.post('/cars/:id/leasing', [
     param('id')
         .isInt({ min: 1 }).withMessage('ID samochodu musi być liczbą całkowitą większą lub równą 1'),
@@ -768,20 +564,6 @@ app.post('/cars/:id/leasing', [
     }
 });
 
-/**
- * @api {post} /admin/create-customer Tworzenie nowego klienta przez dealera
- * @apiName CreateCustomer
- * @apiGroup Admin
- * @apiPermission authenticated, dealer
- *
- * @apiHeader {String} Cookie Sesja użytkownika
- *
- * @apiParam {String{3..}} username Nazwa użytkownika (min 3 znaki)
- * @apiParam {String{6..}} password Hasło użytkownika (min 6 znaków)
- * @apiParam {String} firstName Imię użytkownika (wymagane)
- * @apiParam {String} lastName Nazwisko użytkownika (wymagane)
- *
- */
 app.post('/admin/create-customer', authenticateSession, [
     body('username')
         .isString().withMessage('Nazwa użytkownika musi być tekstem')
