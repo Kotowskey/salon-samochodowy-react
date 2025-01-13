@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import BuyCarForm from './BuyCarForm';
 import RentalForm from '../rentals/RentalForm';
 import LeasingForm from '../rentals/LeasingForm';
+import { useNavigate } from 'react-router-dom';
 
 export const CarCard = ({ car, onRent, onUpdate }) => {
   const { user } = useAuth();
@@ -10,6 +11,7 @@ export const CarCard = ({ car, onRent, onUpdate }) => {
   const [showRentForm, setShowRentForm] = useState(false);
   const [showLeasingForm, setShowLeasingForm] = useState(false);
   const [actionError, setActionError] = useState('');
+  const navigate = useNavigate();
 
   const handleBuySuccess = () => {
     setShowBuyForm(false);
@@ -123,7 +125,7 @@ export const CarCard = ({ car, onRent, onUpdate }) => {
       </div>
 
       {/* Footer with actions */}
-      {!showBuyForm && !showRentForm && !showLeasingForm && user && car.isAvailableForRent && (
+      {!showBuyForm && !showRentForm && !showLeasingForm && user && car.isAvailableForRent &&  (
         <div className="card-footer">
           <div className="d-grid gap-2">
             <button
@@ -146,6 +148,13 @@ export const CarCard = ({ car, onRent, onUpdate }) => {
             >
               <i className="bi bi-calculator me-2"></i>
               Calculate Leasing
+            </button>
+            <button
+              onClick={() => navigate(`/cars/${car.id}`)}
+              className="btn btn-secondary"
+            >
+              <i className="bi bi-info-circle me-2"></i>
+              Details
             </button>
           </div>
         </div>

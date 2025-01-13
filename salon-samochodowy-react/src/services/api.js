@@ -39,7 +39,7 @@ export const api = {
  },
  cars: {
    getAll: () => fetchWithAuth('/cars'),
-   getById: (id) => fetchWithAuth(`/cars/${id}`),
+   getCarById: (id) => fetchWithAuth(`/cars/${id}`),
    create: (carData) => fetchWithAuth('/cars', {
      method: 'POST',
      body: JSON.stringify(carData)

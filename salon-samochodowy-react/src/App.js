@@ -15,6 +15,7 @@ import CarManagement from './components/cars/CarManagement';
 import RentalList from './components/rentals/RentalList';
 import LoginForm from './components/auth/LoginForm';
 import RegisterForm from './components/auth/RegisterForm';
+import CarDetails from './components/cars/CarDetails';
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
             <Route path="/register" element={<RegisterForm />} />
             <Route path="/manage-cars" element={<CarManagement />} />
             <Route path="/rentals" element={<RentalList />} />
+            <Route path="/cars/:id" element={<CarDetails />} />
           </Routes>
         </MainLayout>
       </Router>
