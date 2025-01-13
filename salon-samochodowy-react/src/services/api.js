@@ -1,3 +1,8 @@
+// 6. OPERACJE HTTP
+// GET (getAllCars)
+// POST (createCar)
+// PUT (updateCar)
+// DELETE (deleteCar)
 const API_URL = 'http://localhost:4200';
 
 export const fetchWithAuth = async (endpoint, options = {}) => {
