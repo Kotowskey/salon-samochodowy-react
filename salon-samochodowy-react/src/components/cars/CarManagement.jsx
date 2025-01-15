@@ -3,7 +3,8 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { createCar, deleteCar, getAllCars } from '../../services/carService';
+import { Modal, Button } from 'react-bootstrap';
+import { createCar, updateCar, deleteCar, getAllCars } from '../../services/carService';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -14,6 +15,7 @@ const CarManagement = () => {
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [editCar, setEditCar] = useState(null);
   const [newCar, setNewCar] = useState({
     brand: '',
     model: '',
@@ -87,6 +89,46 @@ const CarManagement = () => {
       }
     }
   };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+  
+    try {
+      const updatedCar = await updateCar(editCar.id, editCar); 
+      setEditCar(null);
+      setSuccessMessage('Car updated successfully!');
+      fetchCars(); 
+    } catch (error) {
+      setError(error.message || 'Error updating car');
+      console.error('Error updating car:', error);
+    }
+  };
+  
+  
+  const handleEdit = (car) => {
+    setEditCar(car); 
+};
+const EditCarModal = ({ car, onClose }) => {
+  return (
+    <Modal show={car != null} onHide={onClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Edit Car</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <form onSubmit={handleUpdate}>
+          <input type="text" placeholder="Brand" value={car?.brand} onChange={(e) => setEditCar({...editCar, brand: e.target.value})} required />
+          <input type="text" placeholder="Model" value={car?.model} onChange={(e) => setEditCar({...editCar, model: e.target.value})} required />
+          <input type="number" placeholder="Year" value={car?.year} onChange={(e) => setEditCar({...editCar, year: e.target.value})} required />
+          <input type="text" placeholder="VIN" value={car?.vin} onChange={(e) => setEditCar({...editCar, vin: e.target.value})} required />
+          <input type="number" placeholder="Price" value={car?.price} onChange={(e) => setEditCar({...editCar, price: e.target.value})} required />
+          <input type="number" placeholder="Horse Power" value={car?.horsePower} onChange={(e) => setEditCar({...editCar, horsePower: e.target.value})} required />
+          <Button type="submit">Update Car</Button>
+        </form>
+      </Modal.Body>
+    </Modal>
+  );
+};
+
 
   if (!user?.isDealer) {
     return null; // or return an unauthorized message
@@ -215,7 +257,7 @@ const CarManagement = () => {
           </form>
         </div>
       </div>
-
+      <div className="container py-4">{editCar && <EditCarModal car={editCar} onClose={() => setEditCar(null)} />}</div>
       {/* Car List */}
       <div className="card">
         <div className="card-header">
@@ -262,6 +304,14 @@ const CarManagement = () => {
                         >
                           <i className="bi bi-trash"></i> Delete
                         </button>
+                        <button
+                           onClick={() => handleEdit(car)}
+                           className="btn btn-primary btn-sm ms-2"
+                           disabled={!car.isAvailableForRent}
+                           title={!car.isAvailableForRent ? "Cannot edit a car that is currently rented or sold" : ""}
+                        >
+                             <i className="bi bi-pencil"></i> Edit
+                          </button>
                       </td>
                     </tr>
                   ))}
