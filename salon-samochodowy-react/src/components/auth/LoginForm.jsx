@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import PropTypes from 'prop-types';
 
 const LoginForm = () => {
   const { loginUser } = useAuth();
@@ -51,3 +52,11 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
+
+LoginForm.propTypes = {
+  onLogin: PropTypes.func.isRequired,
+  credentials: PropTypes.shape({
+    username: PropTypes.string.isRequired,
+    password: PropTypes.string.isRequired
+  })
+};

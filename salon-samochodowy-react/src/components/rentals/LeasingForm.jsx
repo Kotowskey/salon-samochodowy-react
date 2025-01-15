@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
 const LeasingForm = ({ car, onSuccess, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -156,3 +157,15 @@ const LeasingForm = ({ car, onSuccess, onCancel }) => {
 };
 
 export default LeasingForm;
+
+LeasingForm.propTypes = {
+  car: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    brand: PropTypes.string.isRequired,
+    model: PropTypes.string.isRequired,
+    year: PropTypes.number.isRequired,
+    price: PropTypes.number.isRequired
+  }),
+  onSuccess: PropTypes.func,
+  onCancel: PropTypes.func
+};

@@ -4,6 +4,7 @@ import BuyCarForm from './BuyCarForm';
 import RentalForm from '../rentals/RentalForm';
 import LeasingForm from '../rentals/LeasingForm';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 export const CarCard = ({ car, onRent, onUpdate }) => {
   const { user } = useAuth();
@@ -192,3 +193,17 @@ export const CarCard = ({ car, onRent, onUpdate }) => {
 };
 
 export default CarCard;
+
+CarCard.propTypes = {
+  car: PropTypes.shape({
+    brand: PropTypes.string.isRequired,
+    model: PropTypes.string.isRequired,
+    year: PropTypes.number.isRequired,
+    price: PropTypes.number.isRequired,
+    horsePower: PropTypes.number.isRequired,
+    vin: PropTypes.string.isRequired,
+    isAvailableForRent: PropTypes.bool.isRequired
+  }),
+  onRent: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired
+};

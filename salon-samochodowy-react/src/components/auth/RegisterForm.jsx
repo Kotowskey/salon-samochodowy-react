@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import PropTypes from 'prop-types';
 
 const RegisterForm = () => {
   const { registerUser } = useAuth();
@@ -116,3 +117,13 @@ const RegisterForm = () => {
 };
 
 export default RegisterForm;
+
+RegisterForm.propTypes = {
+  onRegister: PropTypes.func.isRequired,
+  credentials: PropTypes.shape({
+    username: PropTypes.string.isRequired,
+    password: PropTypes.string.isRequired,
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired
+  })
+};

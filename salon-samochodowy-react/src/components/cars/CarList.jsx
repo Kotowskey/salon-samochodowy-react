@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { CarCard } from './CarCard';
 import { getAllCars } from '../../services/carService';
 import { createRental } from '../../services/rentalService';
+import PropTypes from 'prop-types';
 
 const CarList = () => {
   const [cars, setCars] = useState([]);
@@ -190,3 +191,16 @@ const CarList = () => {
 };
 
 export default CarList;
+
+CarList.propTypes = {
+  cars: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    brand: PropTypes.string.isRequired,
+    model: PropTypes.string.isRequired,
+    year: PropTypes.number.isRequired,
+    price: PropTypes.number.isRequired,
+    isAvailableForRent: PropTypes.bool.isRequired
+  })),
+  onRent: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired
+};

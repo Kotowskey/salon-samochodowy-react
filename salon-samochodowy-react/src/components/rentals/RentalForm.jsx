@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
 const RentalForm = ({ car, onSubmit, onCancel }) => {
   const [startDate, setStartDate] = useState('');
@@ -113,3 +114,15 @@ const RentalForm = ({ car, onSubmit, onCancel }) => {
 };
 
 export default RentalForm;
+
+RentalForm.propTypes = {
+  car: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    brand: PropTypes.string.isRequired,
+    model: PropTypes.string.isRequired,
+    year: PropTypes.number.isRequired,
+    price: PropTypes.number.isRequired
+  }),
+  onSubmit: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired
+};

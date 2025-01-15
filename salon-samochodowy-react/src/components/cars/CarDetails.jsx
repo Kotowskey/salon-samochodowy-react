@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getCarById } from '../../services/carService';
+import PropTypes from 'prop-types';
 
 const CarDetails = () => {
   const { id } = useParams();
@@ -133,3 +134,15 @@ const CarDetails = () => {
 };
 
 export default CarDetails;
+
+CarDetails.propTypes = {
+  car: PropTypes.shape({
+    brand: PropTypes.string.isRequired,
+    model: PropTypes.string.isRequired,
+    year: PropTypes.number.isRequired,
+    price: PropTypes.number.isRequired,
+    horsePower: PropTypes.number.isRequired,
+    vin: PropTypes.string.isRequired,
+    isAvailableForRent: PropTypes.bool.isRequired
+  })
+};

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { buyCar } from '../../services/carService';
+import PropTypes from 'prop-types';
 
 const BuyCarForm = ({ car, onSuccess, onCancel }) => {
   const [loading, setLoading] = useState(false);
@@ -93,3 +94,17 @@ const BuyCarForm = ({ car, onSuccess, onCancel }) => {
 };
 
 export default BuyCarForm;
+
+BuyCarForm.propTypes = {
+  car: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    brand: PropTypes.string.isRequired,
+    model: PropTypes.string.isRequired,
+    year: PropTypes.number.isRequired,
+    vin: PropTypes.string.isRequired,
+    horsePower: PropTypes.number.isRequired,
+    price: PropTypes.number.isRequired
+  }),
+  onSuccess: PropTypes.func,
+  onCancel: PropTypes.func
+};

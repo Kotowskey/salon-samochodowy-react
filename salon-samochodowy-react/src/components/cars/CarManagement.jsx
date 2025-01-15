@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { createCar, deleteCar, getAllCars } from '../../services/carService';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const CarManagement = () => {
   const { user } = useAuth();
@@ -275,3 +276,27 @@ const CarManagement = () => {
 };
 
 export default CarManagement;
+CarManagement.propTypes = {
+  cars: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    brand: PropTypes.string.isRequired,
+    model: PropTypes.string.isRequired,
+    year: PropTypes.number.isRequired,
+    vin: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    horsePower: PropTypes.number.isRequired,
+    isAvailableForRent: PropTypes.bool.isRequired
+  })),
+  newCar: PropTypes.shape({
+    brand: PropTypes.string.isRequired,
+    model: PropTypes.string.isRequired,
+    year: PropTypes.number.isRequired,
+    vin: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    horsePower: PropTypes.number.isRequired,
+    isAvailableForRent: PropTypes.bool.isRequired
+  }),
+  onAddCar: PropTypes.func.isRequired,
+  onDeleteCar: PropTypes.func.isRequired,
+  onUpdateCars: PropTypes.func.isRequired
+};

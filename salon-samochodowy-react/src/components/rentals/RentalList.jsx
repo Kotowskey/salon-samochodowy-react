@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getAllRentals, deleteRental } from '../../services/rentalService';
 import { getCarById } from '../../services/carService';
 import { useAuth } from '../../context/AuthContext';
+import PropTypes from 'prop-types';
 
 const RentalList = () => {
   const [rentals, setRentals] = useState([]);
@@ -79,3 +80,18 @@ const RentalList = () => {
 };
 
 export default RentalList;
+
+RentalList.propTypes = {
+  rentals: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    startDate: PropTypes.string.isRequired,
+    endDate: PropTypes.string.isRequired,
+    car: PropTypes.shape({
+      brand: PropTypes.string.isRequired,
+      model: PropTypes.string.isRequired,
+      vin: PropTypes.string.isRequired,
+      price: PropTypes.number.isRequired
+    })
+  })),
+  onReturn: PropTypes.func.isRequired
+};
