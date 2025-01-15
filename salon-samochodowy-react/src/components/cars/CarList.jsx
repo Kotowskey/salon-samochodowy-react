@@ -1,3 +1,5 @@
+// Funkcjonalności - Filtrowanie,sortowanie
+
 import React, { useState, useEffect } from 'react';
 import { CarCard } from './CarCard';
 import { getAllCars } from '../../services/carService';

@@ -1,3 +1,7 @@
+// Struktura danych (1pkt) - liczby, stringi, tablice, obiekty
+// Funkcjonalności - dodawanie, usuwanie, edycja
+
+
 import React, { useState, useEffect } from 'react';
 import { createCar, deleteCar, getAllCars } from '../../services/carService';
 import { useAuth } from '../../context/AuthContext';
