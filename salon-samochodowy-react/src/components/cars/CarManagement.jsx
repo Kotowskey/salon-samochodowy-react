@@ -8,6 +8,7 @@ import { createCar, updateCar, deleteCar, getAllCars } from '../../services/carS
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import ValidationErrorsModal from './ValidationErrorModal';
 
 const CarManagement = () => {
   const { user } = useAuth();
@@ -16,6 +17,7 @@ const CarManagement = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [editCar, setEditCar] = useState(null);
+  const [validationErrors, setValidationErrors] = useState([]);
   const [newCar, setNewCar] = useState({
     brand: '',
     model: '',
@@ -50,25 +52,44 @@ const CarManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccessMessage('');
-    
+  
+    const errors = [];
+    if (!newCar.brand.trim()) errors.push("Brand is required.");
+    if (!newCar.model.trim()) errors.push("Model is required.");
+    if (!newCar.year || newCar.year < 1886 || newCar.year > new Date().getFullYear() + 1)
+      errors.push("Year must be between 1886 and the next year.");
+    if (!/^[A-HJ-NPR-Z0-9]{17}$/.test(newCar.vin))
+      errors.push("VIN must be exactly 17 characters and alphanumeric.");
+    if (!newCar.price || newCar.price <= 0)
+      errors.push("Price must be greater than 0.");
+    if (!newCar.horsePower || newCar.horsePower <= 0)
+      errors.push("Horse Power must be greater than 0.");
+  
+    if (errors.length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+  
+    setValidationErrors([]);
+    setError("");
+    setSuccessMessage("");
+  
     try {
       await createCar(newCar);
-      setSuccessMessage('Car added successfully!');
+      setSuccessMessage("Car added successfully!");
       setNewCar({
-        brand: '',
-        model: '',
-        year: '',
-        vin: '',
-        price: '',
-        horsePower: '',
-        isAvailableForRent: true
+        brand: "",
+        model: "",
+        year: "",
+        vin: "",
+        price: "",
+        horsePower: "",
+        isAvailableForRent: true,
       });
       fetchCars();
     } catch (error) {
-      setError(error.message || 'Error adding car');
-      console.error('Error adding car:', error);
+      setError(error.message || "Error adding car");
+      console.error("Error adding car:", error);
     }
   };
 
@@ -93,14 +114,34 @@ const CarManagement = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
   
+    const errors = [];
+    if (!editCar.brand.trim()) errors.push("Brand is required.");
+    if (!editCar.model.trim()) errors.push("Model is required.");
+    if (!editCar.year || editCar.year < 1886 || editCar.year > new Date().getFullYear() + 1)
+      errors.push("Year must be between 1886 and the next year.");
+    if (!/^[A-HJ-NPR-Z0-9]{17}$/.test(editCar.vin))
+      errors.push("VIN must be exactly 17 characters and alphanumeric.");
+    if (!editCar.price || editCar.price <= 0)
+      errors.push("Price must be greater than 0.");
+    if (!editCar.horsePower || editCar.horsePower <= 0)
+      errors.push("Horse Power must be greater than 0.");
+  
+    if (errors.length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+  
+    setValidationErrors([]);
+    setError("");
+  
     try {
-      const updatedCar = await updateCar(editCar.id, editCar); 
+      await updateCar(editCar.id, editCar);
       setEditCar(null);
-      setSuccessMessage('Car updated successfully!');
-      fetchCars(); 
+      setSuccessMessage("Car updated successfully!");
+      fetchCars();
     } catch (error) {
-      setError(error.message || 'Error updating car');
-      console.error('Error updating car:', error);
+      setError(error.message || "Error updating car");
+      console.error("Error updating car:", error);
     }
   };
   
@@ -163,6 +204,10 @@ const EditCarModal = ({ car, onClose }) => {
           <button type="button" className="btn-close" onClick={() => setSuccessMessage('')} aria-label="Close"></button>
         </div>
       )}
+      <ValidationErrorsModal
+      errors={validationErrors}
+      onClose={() => setValidationErrors([])} // Clears the validation errors when the modal is closed
+    />
 
       {/* Add Car Form */}
       <div className="card mb-4">
@@ -215,7 +260,7 @@ const EditCarModal = ({ car, onClose }) => {
                   id="vin"
                   value={newCar.vin}
                   onChange={(e) => setNewCar(prev => ({ ...prev, vin: e.target.value.toUpperCase() }))}
-                  pattern="[A-HJ-NPR-Z0-9]{17}"
+                  /*pattern="[A-HJ-NPR-Z0-9]{17}"*/
                   maxLength="17"
                   required
                 />
