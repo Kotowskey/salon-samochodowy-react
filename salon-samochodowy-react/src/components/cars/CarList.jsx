@@ -1,5 +1,6 @@
-// Funkcjonalności - Filtrowanie,sortowanie
-
+// 2. Funkcjonalności - Filtrowanie,sortowanie
+// 3. Weryfikacja typów
+// 5. Komunikacja dwukierunkowa (CarList, CarCard)
 import React, { useState, useEffect } from 'react';
 import { CarCard } from './CarCard';
 import { getAllCars } from '../../services/carService';

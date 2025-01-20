@@ -1,3 +1,5 @@
+// 4. Komponent prezentacyjny
+// 6. Komponent reużywalny w różnych formsach
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
 import PropTypes from "prop-types";

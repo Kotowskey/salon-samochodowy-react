@@ -1,3 +1,7 @@
+// 3. Weryfikacja typów
+// 4. Komponent prezentacyjny
+// 5. Komunikacja dwukierunkowa (CarList, CarCard)
+// 6. Komponent reużywalny (używany w CarList i CarManagement)
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import BuyCarForm from './BuyCarForm';

@@ -1,4 +1,4 @@
-// Komponent prezentacyjny
+// 4. Komponent prezentacyjny
 
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';

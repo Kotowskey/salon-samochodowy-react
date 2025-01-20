@@ -1,6 +1,13 @@
+// 8. Operacje HTTP
+// GET getAllCars - pobranie wszystkich samochodów
+// POST createCar - dodanie nowego samochodu
+// GET getCarById - pobranie szczegółów samochodu
+// PUT updateCar - aktualizacja danych samochodu
+// DELETE deleteCar - usunięcie samochodu
+// POST buyCar - zakup samochodu
+
 const API_URL = 'http://localhost:4200';
 
-// Function to handle API responses
 const handleResponse = async (response) => {
   if (!response.ok) {
     const errorData = await response.json();

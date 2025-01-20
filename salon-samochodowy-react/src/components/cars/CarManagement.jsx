@@ -1,6 +1,7 @@
-// Struktura danych (1pkt) - liczby, stringi, tablice, obiekty
-// Funkcjonalności - dodawanie, usuwanie, edycja
-
+// 1.Struktura danych  - liczby, stringi, tablice, obiekty
+// 2.Funkcjonalności - dodawanie, usuwanie, edycja
+// 3. Weryfikacja typów
+// 7. Walidacja formularzy
 
 import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
