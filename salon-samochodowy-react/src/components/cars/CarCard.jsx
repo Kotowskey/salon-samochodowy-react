@@ -27,7 +27,7 @@ export const CarCard = ({ car, onRent, onUpdate }) => {
   const handleRentSubmit = async (rentalData) => {
     try {
       setActionError('');
-      await onRent(car.id);
+      await onRent(rentalData);
       setShowRentForm(false);
       onUpdate?.();
     } catch (err) {
@@ -35,8 +35,7 @@ export const CarCard = ({ car, onRent, onUpdate }) => {
     }
   };
 
-  const handleLeasingSuccess = (leasingDetails) => {
-    // Keep the form open to show the results
+  const handleLeasingSuccess = () => {
     onUpdate?.();
   };
 
@@ -89,14 +88,12 @@ export const CarCard = ({ car, onRent, onUpdate }) => {
 
   return (
     <div className="card h-100 shadow">
-      {/* Header */}
       <div className="card-header bg-primary text-white">
         <h5 className="card-title mb-0 text-center">
           {car.brand} {car.model}
         </h5>
       </div>
 
-      {/* Body */}
       <div className="card-body">
         {renderForm() || (
           <>
@@ -129,8 +126,7 @@ export const CarCard = ({ car, onRent, onUpdate }) => {
         )}
       </div>
 
-      {/* Footer with actions */}
-      {!showBuyForm && !showRentForm && !showLeasingForm && user && car.isAvailableForRent &&  (
+      {!showBuyForm && !showRentForm && !showLeasingForm && user && car.isAvailableForRent && (
         <div className="card-footer">
           <div className="d-grid gap-2">
             <button
@@ -143,71 +139,70 @@ export const CarCard = ({ car, onRent, onUpdate }) => {
             <button
               onClick={() => setShowBuyForm(true)}
               className="btn btn-primary"
-            >
-              <i className="bi bi-cart-check me-2"></i>
-              Buy Car
-            </button>
-            <button
-              onClick={() => setShowLeasingForm(true)}
-              className="btn btn-info text-white"
-            >
-              <i className="bi bi-calculator me-2"></i>
-              Calculate Leasing
-            </button>
-            <button
-              onClick={() => navigate(`/cars/${car.id}`)}
-              className="btn btn-secondary"
-            >
-              <i className="bi bi-info-circle me-2"></i>
-              Details
+              >
+                <i className="bi bi-cart-check me-2"></i>
+                Buy Car
+              </button>
+              <button
+                onClick={() => setShowLeasingForm(true)}
+                className="btn btn-info text-white"
+              >
+                <i className="bi bi-calculator me-2"></i>
+                Calculate Leasing
+              </button>
+              <button
+                onClick={() => navigate(`/cars/${car.id}`)}
+                className="btn btn-secondary"
+              >
+                <i className="bi bi-info-circle me-2"></i>
+                Details
+              </button>
+            </div>
+          </div>
+        )}
+  
+        {!showBuyForm && !showRentForm && !showLeasingForm && (!user || !car.isAvailableForRent) && (
+          <div className="card-footer">
+            <button className="btn btn-secondary w-100" disabled>
+              <i className="bi bi-lock me-2"></i>
+              {!user ? 'Login to Continue' : 'Not Available'}
             </button>
           </div>
-        </div>
-      )}
-
-      {/* Not logged in or car not available message */}
-      {!showBuyForm && !showRentForm && !showLeasingForm && (!user || !car.isAvailableForRent) && (
-        <div className="card-footer">
-          <button className="btn btn-secondary w-100" disabled>
-            <i className="bi bi-lock me-2"></i>
-            {!user ? 'Login to Continue' : 'Not Available'}
-          </button>
-        </div>
-      )}
-
-      {/* Additional info badge */}
-      {car.horsePower > 300 && (
-        <div className="position-absolute top-0 end-0 m-2">
-          <span className="badge bg-danger">
-            <i className="bi bi-lightning-charge-fill me-1"></i>
-            {car.horsePower} KM
+        )}
+  
+        {car.horsePower > 300 && (
+          <div className="position-absolute top-0 end-0 m-2">
+            <span className="badge bg-danger">
+              <i className="bi bi-lightning-charge-fill me-1"></i>
+              {car.horsePower} HP
+            </span>
+          </div>
+        )}
+  
+        <div className="position-absolute top-0 start-0 m-2">
+          <span className="badge bg-success">
+            <i className="bi bi-tag-fill me-1"></i>
+            {formatPrice(car.price)}
           </span>
         </div>
-      )}
-
-      {/* Price badge */}
-      <div className="position-absolute top-0 start-0 m-2">
-        <span className="badge bg-success">
-          <i className="bi bi-tag-fill me-1"></i>
-          {formatPrice(car.price)}
-        </span>
       </div>
-    </div>
-  );
-};
-
-export default CarCard;
-
-CarCard.propTypes = {
-  car: PropTypes.shape({
-    brand: PropTypes.string.isRequired,
-    model: PropTypes.string.isRequired,
-    year: PropTypes.number.isRequired,
-    price: PropTypes.number.isRequired,
-    horsePower: PropTypes.number.isRequired,
-    vin: PropTypes.string.isRequired,
-    isAvailableForRent: PropTypes.bool.isRequired
-  }),
-  onRent: PropTypes.func.isRequired,
-  onUpdate: PropTypes.func.isRequired
-};
+    );
+  };
+  
+  CarCard.propTypes = {
+    car: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      brand: PropTypes.string.isRequired,
+      model: PropTypes.string.isRequired,
+      year: PropTypes.number.isRequired,
+      price: PropTypes.number.isRequired,
+      horsePower: PropTypes.number.isRequired,
+      vin: PropTypes.string.isRequired,
+      isAvailableForRent: PropTypes.bool.isRequired
+    }).isRequired,
+    onRent: PropTypes.func.isRequired,
+    onUpdate: PropTypes.func.isRequired
+  };
+  
+  export default CarCard;
+  

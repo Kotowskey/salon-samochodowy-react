@@ -14,10 +14,21 @@ const RentalForm = ({ car, onSubmit, onCancel }) => {
     setLoading(true);
 
     try {
+      if (!startDate || !endDate) {
+        throw new Error('Please select both start and end dates');
+      }
+
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+
+      if (start >= end) {
+        throw new Error('End date must be after start date');
+      }
+
       const rentalData = {
         carId: car.id,
-        startDate: new Date(startDate).toISOString(),
-        endDate: new Date(endDate).toISOString()
+        startDate: start.toISOString(),
+        endDate: end.toISOString()
       };
 
       await onSubmit(rentalData);
@@ -34,6 +45,11 @@ const RentalForm = ({ car, onSubmit, onCancel }) => {
       currency: 'USD'
     }).format(price);
   };
+
+  const today = new Date().toISOString().split('T')[0];
+  const maxDate = new Date();
+  maxDate.setFullYear(maxDate.getFullYear() + 1);
+  const maxDateStr = maxDate.toISOString().split('T')[0];
 
   return (
     <div className="card">
@@ -64,7 +80,8 @@ const RentalForm = ({ car, onSubmit, onCancel }) => {
               className="form-control"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              min={new Date().toISOString().split('T')[0]}
+              min={today}
+              max={maxDateStr}
               required
             />
           </div>
@@ -77,7 +94,8 @@ const RentalForm = ({ car, onSubmit, onCancel }) => {
               className="form-control"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              min={startDate || new Date().toISOString().split('T')[0]}
+              min={startDate || today}
+              max={maxDateStr}
               required
             />
           </div>
@@ -114,8 +132,6 @@ const RentalForm = ({ car, onSubmit, onCancel }) => {
   );
 };
 
-export default RentalForm;
-
 RentalForm.propTypes = {
   car: PropTypes.shape({
     id: PropTypes.number.isRequired,
@@ -123,7 +139,9 @@ RentalForm.propTypes = {
     model: PropTypes.string.isRequired,
     year: PropTypes.number.isRequired,
     price: PropTypes.number.isRequired
-  }),
+  }).isRequired,
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired
 };
+
+export default RentalForm;

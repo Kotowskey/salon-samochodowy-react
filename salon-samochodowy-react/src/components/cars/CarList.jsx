@@ -36,13 +36,8 @@ const CarList = () => {
     }
   };
 
-  const handleRent = async (carId) => {
+  const handleRent = async (rentalData) => {
     try {
-      const rentalData = {
-        carId,
-        startDate: new Date().toISOString(),
-        endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 days rental
-      };
       await createRental(rentalData);
       await fetchCars(); // Refresh car list
     } catch (err) {
@@ -191,8 +186,6 @@ const CarList = () => {
   );
 };
 
-export default CarList;
-
 CarList.propTypes = {
   cars: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number.isRequired,
@@ -205,3 +198,5 @@ CarList.propTypes = {
   onRent: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired
 };
+
+export default CarList;
