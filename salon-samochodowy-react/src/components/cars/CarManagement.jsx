@@ -150,7 +150,49 @@ const CarManagement = () => {
   const handleEdit = (car) => {
     setEditCar(car); 
 };
-const EditCarModal = ({ car, onClose }) => {
+const EditCarModal =({ car, onClose, updateCar, setValidationErrors, setError, setSuccessMessage, fetchCars }) => {
+  // Lokalny stan do przechowywania tymczasowych danych edycji
+  const [localCar, setLocalCar] = useState({ ...car });
+
+  // Synchronizuj stan lokalny z globalnym gdy przychodzą nowe propsy
+  useEffect(() => {
+    setLocalCar({ ...car });
+  }, [car]);
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
+    const errors = [];
+    if (!localCar.brand.trim()) errors.push("Brand is required.");
+    if (!localCar.model.trim()) errors.push("Model is required.");
+    if (!localCar.year || localCar.year < 1886 || localCar.year > new Date().getFullYear() + 1)
+      errors.push("Year must be between 1886 and the next year.");
+    if (!/^[A-HJ-NPR-Z0-9]{17}$/.test(localCar.vin))
+      errors.push("VIN must be exactly 17 characters and alphanumeric.");
+    if (!localCar.price || localCar.price <= 0)
+      errors.push("Price must be greater than 0.");
+    if (!localCar.horsePower || localCar.horsePower <= 0)
+      errors.push("Horse Power must be greater than 0.");
+
+    if (errors.length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+
+    setValidationErrors([]);
+    setError("");
+
+    try {
+      await updateCar(localCar.id, localCar); // Zakładam, że funkcja updateCar przyjmuje id i dane samochodu
+      setSuccessMessage("Car updated successfully!");
+      fetchCars(); // Załaduj ponownie dane po pomyślnej aktualizacji
+      onClose(); // Zamknij modal
+    } catch (error) {
+      setError(error.message || "Error updating car");
+      console.error("Error updating car:", error);
+    }
+  };
+
   return (
     <Modal show={car != null} onHide={onClose}>
       <Modal.Header closeButton>
@@ -158,12 +200,12 @@ const EditCarModal = ({ car, onClose }) => {
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={handleUpdate}>
-          <input type="text" placeholder="Brand" value={car?.brand} onChange={(e) => setEditCar({...editCar, brand: e.target.value})} required />
-          <input type="text" placeholder="Model" value={car?.model} onChange={(e) => setEditCar({...editCar, model: e.target.value})} required />
-          <input type="number" placeholder="Year" value={car?.year} onChange={(e) => setEditCar({...editCar, year: e.target.value})} required />
-          <input type="text" placeholder="VIN" value={car?.vin} onChange={(e) => setEditCar({...editCar, vin: e.target.value})} required />
-          <input type="number" placeholder="Price" value={car?.price} onChange={(e) => setEditCar({...editCar, price: e.target.value})} required />
-          <input type="number" placeholder="Horse Power" value={car?.horsePower} onChange={(e) => setEditCar({...editCar, horsePower: e.target.value})} required />
+          <input type="text" placeholder="Brand" value={localCar.brand} onChange={(e) => setLocalCar({...localCar, brand: e.target.value})} required />
+          <input type="text" placeholder="Model" value={localCar.model} onChange={(e) => setLocalCar({...localCar, model: e.target.value})} required />
+          <input type="number" placeholder="Year" value={localCar.year} onChange={(e) => setLocalCar({...localCar, year: e.target.value})} required />
+          <input type="text" placeholder="VIN" value={localCar.vin} onChange={(e) => setLocalCar({...localCar, vin: e.target.value})} required />
+          <input type="number" placeholder="Price" value={localCar.price} onChange={(e) => setLocalCar({...localCar, price: e.target.value})} required />
+          <input type="number" placeholder="Horse Power" value={localCar.horsePower} onChange={(e) => setLocalCar({...localCar, horsePower: e.target.value})} required />
           <Button type="submit">Update Car</Button>
         </form>
       </Modal.Body>
@@ -303,7 +345,13 @@ const EditCarModal = ({ car, onClose }) => {
           </form>
         </div>
       </div>
-      <div className="container py-4">{editCar && <EditCarModal car={editCar} onClose={() => setEditCar(null)} />}</div>
+      <div className="container py-4">{editCar && <EditCarModal car={editCar}
+                                                    onClose={() => setEditCar(null)}
+                                                    updateCar={updateCar}
+                                                    setValidationErrors={setValidationErrors}
+                                                    setError={setError}
+                                                    setSuccessMessage={setSuccessMessage}
+                                                    fetchCars={fetchCars} />}</div>
       {/* Car List */}
       <div className="card">
         <div className="card-header">
