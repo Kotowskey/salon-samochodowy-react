@@ -618,55 +618,65 @@ app.post('/admin/create-customer', authenticateSession, [
 
 
 app.post('/rentals', authenticateSession, async (req, res) => {
-    console.log('Żądanie do zapisania wynajmu:', req.body, 'Użytkownik:', req.session.userId);
-
     try {
         const { carId, startDate, endDate } = req.body;
 
-        // Walidacja dat
+        // Validate dates
         if (!startDate || !endDate || new Date(startDate) >= new Date(endDate)) {
-            return res.status(400).json({ error: 'Nieprawidłowe daty wynajmu' });
+            return res.status(400).json({ error: 'Invalid rental dates' });
         }
 
-        // Sprawdź, czy samochód istnieje i jest dostępny
+        // Check if car exists and is available
         const car = await Car.findByPk(carId);
         if (!car) {
-            return res.status(404).json({ error: 'Samochód nie znaleziony' });
-        }
-        if (!car.isAvailableForRent) {
-            return res.status(400).json({ error: 'Samochód nie jest dostępny do wynajmu' });
+            return res.status(404).json({ error: 'Car not found' });
         }
 
-        // Rozpocznij transakcję
+        // Check if car is already rented
+        const existingRental = await Rental.findOne({
+            where: {
+                carId,
+                [Op.or]: [
+                    {
+                        startDate: {
+                            [Op.between]: [startDate, endDate]
+                        }
+                    },
+                    {
+                        endDate: {
+                            [Op.between]: [startDate, endDate]
+                        }
+                    }
+                ]
+            }
+        });
+
+        if (existingRental || !car.isAvailableForRent) {
+            return res.status(400).json({ error: 'Car is not available for rent' });
+        }
+
         const t = await sequelize.transaction();
 
         try {
-            // Utwórz wynajem
             const rental = await Rental.create({
                 carId,
                 userId: req.session.userId,
                 startDate: new Date(startDate),
-                endDate: new Date(endDate),
+                endDate: new Date(endDate)
             }, { transaction: t });
 
-            // Aktualizuj status samochodu i renterId
             await car.update({
                 isAvailableForRent: false,
                 renterId: req.session.userId
             }, { transaction: t });
 
-            // Zatwierdź transakcję
             await t.commit();
-
-            console.log('Wynajem zapisany:', rental);
-            res.status(201).json({ message: 'Wynajem zapisany', rental });
+            res.status(201).json({ message: 'Rental created', rental });
         } catch (error) {
-            // Wycofaj transakcję w przypadku błędu
             await t.rollback();
             throw error;
         }
     } catch (error) {
-        console.error('Błąd przy zapisie wynajmu:', error);
         res.status(500).json({ error: error.message });
     }
 });
