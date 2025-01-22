@@ -6,10 +6,8 @@ import { CarCard } from './CarCard';
 import { getAllCars } from '../../services/carService';
 import { createRental } from '../../services/rentalService';
 import PropTypes from 'prop-types';
-import { useAuth } from '../../context/AuthContext';
 
 const CarList = () => {
-  const { user } = useAuth();
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -40,11 +38,6 @@ const CarList = () => {
 
   const handleRent = async (carId) => {
     try {
-      if (!user) {
-        setError('Please log in to rent a car');
-        return;
-      }
-      
       const rentalData = {
         carId,
         startDate: new Date().toISOString(),
