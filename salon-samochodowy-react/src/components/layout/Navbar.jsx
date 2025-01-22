@@ -1,7 +1,7 @@
 // 4. Komponent prezentacyjny
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import LoginForm from '../auth/LoginForm';
 import RegisterForm from '../auth/RegisterForm';
@@ -9,9 +9,12 @@ import RegisterForm from '../auth/RegisterForm';
 const Navbar = () => {
   const { user, logoutUser } = useAuth();
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const openRegisterModal = () => setIsRegisterOpen(true);
-  const closeRegisterModal = () => setIsRegisterOpen(false);
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate('/');
+  };
 
   return (
     <>
@@ -64,7 +67,7 @@ const Navbar = () => {
                     Welcome, {user.firstName}
                   </span>
                   <button 
-                    onClick={logoutUser} 
+                    onClick={handleLogout} 
                     className="btn btn-outline-light btn-sm"
                   >
                     <i className="bi bi-box-arrow-right me-1"></i>
@@ -75,7 +78,7 @@ const Navbar = () => {
                 <div className="d-flex align-items-center gap-2">
                   <LoginForm />
                   <button
-                    onClick={openRegisterModal}
+                    onClick={() => setIsRegisterOpen(true)}
                     className="btn btn-outline-light btn-sm"
                   >
                     <i className="bi bi-person-plus me-1"></i>
@@ -88,7 +91,6 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Modal rejestracji */}
       {isRegisterOpen && (
         <div 
           className="modal fade show" 
@@ -105,7 +107,7 @@ const Navbar = () => {
                 <button
                   type="button"
                   className="btn-close"
-                  onClick={closeRegisterModal}
+                  onClick={() => setIsRegisterOpen(false)}
                   aria-label="Close"
                 ></button>
               </div>
