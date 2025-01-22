@@ -721,15 +721,20 @@ app.delete('/rentals/:id', authenticateSession, async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
-// Pobieranie wszystkich wynajmów
 app.get('/rentals', authenticateSession, async (req, res) => {
-    console.log('Żądanie otrzymane do /rentals od użytkownika:', req.session?.userId);
     try {
-        const rentals = await Rental.findAll();
-        console.log('Znalezione wynajmy:', rentals);
+        const rentals = await Rental.findAll({
+            where: {
+                userId: req.session.userId
+            },
+            include: [{
+                model: Car,
+                attributes: ['brand', 'model', 'vin', 'price']
+            }]
+        });
         res.status(200).json(rentals);
     } catch (error) {
-        console.error('Błąd w trasie /rentals:', error);
+        console.error('Error fetching rentals:', error);
         res.status(500).json({ error: error.message });
     }
 });
