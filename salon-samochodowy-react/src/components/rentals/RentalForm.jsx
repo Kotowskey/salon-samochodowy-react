@@ -66,7 +66,7 @@ const RentalForm = ({ car, onSubmit, onCancel }) => {
               <strong>Year:</strong> {car.year}
             </li>
             <li className="list-group-item">
-              <strong>Daily Rate:</strong> {formatPrice(car.price)}
+              <strong>Daily Rate:</strong> {formatPrice(car.price/500)}
             </li>
           </ul>
         </div>
