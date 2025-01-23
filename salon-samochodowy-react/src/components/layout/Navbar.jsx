@@ -47,6 +47,12 @@ const Navbar = () => {
                       My Rentals
                     </Link>
                   </li>
+                  <li className="nav-item">
+                    <Link to="/purchased-cars" className="nav-link">
+                      <i className="bi bi-cart-check me-1"></i>
+                      My Cars
+                    </Link>
+                  </li>
                   {user.isDealer && (
                     <li className="nav-item">
                       <Link to="/manage-cars" className="nav-link">
@@ -93,8 +99,8 @@ const Navbar = () => {
 
       {isRegisterOpen && (
         <div 
-          className="modal fade show" 
-          style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}
+          className="modal fade show d-block" 
+          style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
           tabIndex="-1"
         >
           <div className="modal-dialog modal-dialog-centered">

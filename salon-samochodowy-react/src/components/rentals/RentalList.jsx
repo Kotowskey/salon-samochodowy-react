@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { getAllRentals, deleteRental } from '../../services/rentalService';
 import { getCarById } from '../../services/carService';
-import { useAuth } from '../../context/AuthContext';
 import PropTypes from 'prop-types';
 
 const RentalList = () => {
   const [rentals, setRentals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const { user } = useAuth();
 
   useEffect(() => {
     fetchRentals();
@@ -66,7 +64,7 @@ const RentalList = () => {
                 </div>
                 <button
                   onClick={() => handleReturn(rental.carId)}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
+                  className="btn btn-danger"
                 >
                   Return Car
                 </button>
