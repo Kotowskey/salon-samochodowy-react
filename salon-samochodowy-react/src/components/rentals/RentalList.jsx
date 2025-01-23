@@ -46,7 +46,9 @@ const RentalList = () => {
       <h2 className="text-2xl font-bold mb-6">My Rentals</h2>
       <div className="grid gap-4">
         {rentals.length === 0 ? (
-          <p className="text-gray-500 text-center">No active rentals found</p>
+          <div className="alert alert-info">
+            You have no rentals yet
+          </div>
         ) : (
           rentals.map(rental => (
             <div key={rental.id} className="bg-white rounded-lg shadow p-4">
